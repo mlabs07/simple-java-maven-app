@@ -1,24 +1,16 @@
-pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.0'
-            args '-v /root/.m2:/root/.m2'
-        }
-    }
-    stages {
+node {
+    docker.image('maven:3.9.0').inside("--network host") {
+        // build
         stage('Build') {
-            steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
+            sh 'mvn -B -DskipTests clean package'
         }
+        
+        // test
         stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
+            sh 'mvn test'
+            
+            stage('Post-Test') {
+                junit 'target/surefire-reports/*.xml'
             }
         }
     }
