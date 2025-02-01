@@ -41,8 +41,34 @@ node {
                 
                 sh 'rm fileList.json'
 
+                // sh """
+                //     echo "Mengunggah file ke Vercel..."
+
+                //     for f in ${staticFolder}/index.html ${staticFolder}/jar-files/*; do
+                //         fileName=\$(basename "\$f")
+                //         fileHash=\$(shasum -a 256 "\$f" | awk '{print \$1}')
+                        
+                //         echo "Uploading: \$fileName with hash \$fileHash"
+
+                //         curl -X POST "https://api.vercel.com/v2/files" \
+                //             -H "Authorization: Bearer $VERCEL_TOKEN" \
+                //             -H "Content-Type: application/octet-stream" \
+                //             --data-binary "@\$f" \
+                //             -o response.json
+                        
+                //         fileUrl=\$(jq -r '.url' response.json)
+                //         echo "{ \"file\": \"\$fileName\", \"sha\": \"\$fileHash\" }," >> fileList.json
+                //     done
+                // """
+
                 sh """
                     echo "Mengunggah file ke Vercel..."
+
+                    # Mulai array JSON
+                    echo "[" > fileList.json
+
+                    # Variabel penanda apakah ini file pertama
+                    first=true
 
                     for f in ${staticFolder}/index.html ${staticFolder}/jar-files/*; do
                         fileName=\$(basename "\$f")
@@ -57,8 +83,20 @@ node {
                             -o response.json
                         
                         fileUrl=\$(jq -r '.url' response.json)
-                        echo "{ \"file\": \"\$fileName\", \"sha\": \"\$fileHash\" }," >> fileList.json
+
+                        # Jika bukan file pertama, tambahkan koma
+                        if [ "\$first" = true ]; then
+                            first=false
+                        else
+                            echo "," >> fileList.json
+                        fi
+
+                        # Tambahkan objek file ke file JSON
+                        echo "{ \"file\": \"\$fileName\", \"sha\": \"\$fileHash\" }" >> fileList.json
                     done
+
+                    # Tutup array JSON
+                    echo "]" >> fileList.json
                 """
 
                 sh 'jq . fileList.json'
