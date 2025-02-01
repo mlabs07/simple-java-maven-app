@@ -61,7 +61,10 @@ node {
                     done
                 """
 
+                sh 'jq . fileList.json'
+                
                 sh 'cat fileList.json'
+
 
                 // sh '''
                 //     echo '{ "name": "dicoding-cicdjava-zulqifli", "files": [' > deploy.json
