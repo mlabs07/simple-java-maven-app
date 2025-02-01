@@ -62,8 +62,8 @@ node {
 
                 
                 sh """
-                    echo "{ \\"name\\": \\"${vercelProjectName}\\", \\"files\\": [" > deploy.json
-                    sed '$ s/,$//' fileList.json >> deploy.json
+                    echo "{ \"name\": \"'"${vercelProjectName}"'\", \"files\": [" > deploy.json
+                    sed "$ s/,$//" fileList.json >> deploy.json
                     echo "] }" >> deploy.json
 
                     curl -X POST "https://api.vercel.com/v13/deployments" \
