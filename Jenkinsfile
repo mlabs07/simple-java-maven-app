@@ -39,6 +39,7 @@ node {
                 //         -F "target=production"
                 // """
                 
+                sh 'rm fileList.json'
 
                 sh """
                     echo "Mengunggah file ke Vercel..."
@@ -59,6 +60,8 @@ node {
                         echo "{ \"file\": \"\$fileName\", \"sha\": \"\$fileHash\" }," >> fileList.json
                     done
                 """
+
+                sh 'cat fileList.json'
 
                 // sh '''
                 //     echo '{ "name": "dicoding-cicdjava-zulqifli", "files": [' > deploy.json
