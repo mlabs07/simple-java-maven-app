@@ -23,9 +23,7 @@ node {
         }
         // 
         stage('deploy') {
-            sh 'mkdir -p vercel-static/static'
-            sh 'cp vercel.json vercel-static/static/'
-            sh "cp ${jarFilePath} vercel-static/static/"
+            sh "cp ${jarFilePath} vercel-static/jar-files/"
 
             withCredentials([string(credentialsId: 'vercel_token', variable: 'VERCEL_TOKEN')]) {
                 // sh 'vercel --token=$VERCEL_TOKEN --prod --yes'
@@ -33,10 +31,10 @@ node {
                 sh """
                     curl -X POST $apiUrl \
                         -H "Authorization: Bearer $VERCEL_TOKEN" \
-                        -H "Content-Type: application/java-archive" \
-                        -F "file=@vercel-static/static/\$(basename $jarFilePath)" \
-                        -F "name=vercel-static" \
-                        -F "files[0]=vercel-static/static/\$(basename $jarFilePath)"
+                        -F "files[]=@vercel-static/index.html" \
+                        -F "files[]=@vercel-static/jar-files/*" \
+                        -F "name=java-build-dicoding" \
+                        -F "target=production"
                 """
             }
             sleep 60
