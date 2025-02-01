@@ -4,10 +4,11 @@ node {
     def staticFolder = 'vercel-static'
     def vercelProjectName = 'dicoding-cicdjava-zulqifli'
 
-    docker.image('maven:3.9.0').inside("--network host") {
+    docker.image('maven:3.9.0').inside("--network host --user root") {
         // build
         stage('Build') {
             checkout scm
+            sh 'apt update && apt install -y jq'
             sh 'mvn -B -DskipTests clean package'
         }
         
