@@ -33,8 +33,9 @@ node {
                 def apiUrl = "https://api.vercel.com/v12/now/deployments"
                 
                 sh """
-                    echo "Mengunggah index.html ke Vercel..."
-                    
+                     echo "Mengunggah index.html ke Vercel..."
+
+                    # Tentukan path ke file index.html yang akan di-upload
                     filePath=${staticFolder}/index.html
 
                     # Upload file index.html ke Vercel
@@ -42,13 +43,9 @@ node {
                         -H "Authorization: Bearer $VERCEL_TOKEN" \
                         -F "file=@\$filePath" \
                         -F "name=vercel-static" \
-                        -F "target=production" \
-                        -o response.json
+                        -F "target=production"
 
-                    # Ambil URL file yang sudah di-deploy dari response
-                    fileUrl=\$(jq -r '.url' response.json)
-
-                    echo "File berhasil diupload dan tersedia di: \$fileUrl"
+                    echo "File berhasil diupload ke Vercel."
                 """
             }
             sleep 60
