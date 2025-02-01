@@ -2,7 +2,7 @@ node {
 
     def jarFilePath = 'target/my-app-1.0-SNAPSHOT.jar'
     def staticFolder = 'vercel-static'
-    def vercelProjectName = 'dicoding-cicdjava-zulqifli'
+    def projectName = 'dicoding-cicdjava-zulqifli'
 
     docker.image('maven:3.9.0').inside("--network host --user root") {
         // build
@@ -24,30 +24,17 @@ node {
         stage('Manual Approval'){
             input message: 'Lanjut ke tahap Deploy? (Klik "Proceed untuk lanjutkan")'
         }
-        // 
-        stage('deploy') {
+    }
+
+    docker.image('node:18-buster-slim').inside("-p 3000:3000 --user root") {
+        // deploy
+        stage('Deploy') {
             sh "cp ${jarFilePath} vercel-static/jar-files/"
 
             withCredentials([string(credentialsId: 'vercel_token', variable: 'VERCEL_TOKEN')]) {
-                // sh 'vercel --token=$VERCEL_TOKEN --prod --yes'
-                def apiUrl = "https://api.vercel.com/v12/now/deployments"
-                
-                sh """
-                     echo "Mengunggah index.html ke Vercel..."
-
-                    # Tentukan path ke file index.html yang akan di-upload
-                    filePath=${staticFolder}/index.html
-
-                    # Upload file index.html ke Vercel
-                    curl -X POST "https://api.vercel.com/v13/now/deployments" \
-                        -H "Authorization: Bearer $VERCEL_TOKEN" \
-                        -F "file=@\$filePath" \
-                        -F "name=vercel-static" \
-                        -F "target=production"
-
-                    echo "File berhasil diupload ke Vercel."
-                """
+                sh 'vercel --token=$VERCEL_TOKEN --cwd $staticFolder --name $projectName --prod --yes'
             }
+
             sleep 60
             echo 'Deploy success'
         }
