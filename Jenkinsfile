@@ -60,12 +60,13 @@ node {
                     done
                 """
 
+                sh '''
+                    echo '{ "name": "dicoding-cicdjava-zulqifli", "files": [' > deploy.json
+                    sed '$ s/,$//' fileList.json >> deploy.json
+                    echo '] }' >> deploy.json
+                '''
                 
                 sh """
-                    echo "{ \"name\": \"'"${vercelProjectName}"'\", \"files\": [" > deploy.json
-                    sed "$ s/,$//" fileList.json >> deploy.json
-                    echo "] }" >> deploy.json
-
                     curl -X POST "https://api.vercel.com/v13/deployments" \
                         -H "Authorization: Bearer $VERCEL_TOKEN" \
                         -H "Content-Type: application/json" \
