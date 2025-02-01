@@ -31,8 +31,8 @@ node {
                 sh """
                     curl -X POST $apiUrl \
                         -H "Authorization: Bearer $VERCEL_TOKEN" \
-                        -F "files[]=@vercel-static/index.html" \
-                        -F "files[]=@vercel-static/jar-files/*" \
+                        -F "files[0]=@vercel-static/index.html" \
+                        -F "files[1]=@vercel-static/jar-files/*" \
                         -F "name=java-build-dicoding" \
                         -F "target=production"
                 """
