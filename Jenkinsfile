@@ -1,4 +1,7 @@
 node {
+
+    def jarFilePath = 'target/my-app-1.0-SNAPSHOT.jar'
+
     docker.image('maven:3.9.0').inside("--network host") {
         // build
         stage('Build') {
@@ -19,6 +22,20 @@ node {
         }
         // 
         stage('deploy') {
+            sh 'mkdir -p vercel-static/static'
+            sh 'cp ${jarFilePath} vercel-static/static/'
+
+            withCredentials([string(credentialsId: 'vercel_token', variable: 'VERCEL_TOKEN')]) {
+                // sh 'vercel --token=$VERCEL_TOKEN --prod --yes'
+                def apiUrl = "https://api.vercel.com/v12/now/deployments"
+                sh """
+                    curl -X POST $apiUrl \
+                        -H "Authorization: Bearer $VERCEL_TOKEN" \
+                        -F "file=@vercel-static/static/$(basename $jarFilePath)" \
+                        -F "name=vercel-static" \
+                        -F "files[0]=vercel-static/static/$(basename $jarFilePath)"
+                """
+            }
             sleep 60
             echo 'Deploy success'
         }
