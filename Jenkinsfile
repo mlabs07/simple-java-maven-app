@@ -31,9 +31,9 @@ node {
                 sh """
                     curl -X POST $apiUrl \
                         -H "Authorization: Bearer $VERCEL_TOKEN" \
-                        -F "file=@vercel-static/static/$(basename $jarFilePath)" \
+                        -F "file=@vercel-static/static/\$(basename $jarFilePath)" \
                         -F "name=vercel-static" \
-                        -F "files[0]=vercel-static/static/$(basename $jarFilePath)"
+                        -F "files[0]=vercel-static/static/\$(basename $jarFilePath)"
                 """
             }
             sleep 60
