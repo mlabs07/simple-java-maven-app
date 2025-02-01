@@ -23,6 +23,7 @@ node {
         // 
         stage('deploy') {
             sh 'mkdir -p vercel-static/static'
+            sh 'cp vercel.json vercel-static/static/'
             sh "cp ${jarFilePath} vercel-static/static/"
 
             withCredentials([string(credentialsId: 'vercel_token', variable: 'VERCEL_TOKEN')]) {
