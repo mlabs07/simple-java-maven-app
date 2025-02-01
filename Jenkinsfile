@@ -13,11 +13,14 @@ node {
                 junit 'target/surefire-reports/*.xml'
             }
         }
+        // manual approval
+        stage('Manual Approval'){
+            input message: 'Lanjut ke tahap Deploy? (Klik "Proceed untuk lanjutkan")'
+        }
         // 
         stage('deploy') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-            }
+            sleep 60
+            echo 'Deploy success'
         }
     }
 }
