@@ -60,10 +60,15 @@ node {
                     done
                 """
 
+                // sh '''
+                //     echo '{ "name": "dicoding-cicdjava-zulqifli", "files": [' > deploy.json
+                //     sed '$ s/,$//' fileList.json >> deploy.json
+                //     echo '] }' >> deploy.json
+                // '''
+
                 sh '''
-                    echo '{ "name": "dicoding-cicdjava-zulqifli", "files": [' > deploy.json
-                    sed '$ s/,$//' fileList.json >> deploy.json
-                    echo '] }' >> deploy.json
+                    jq -s '{ "name": "dicoding-cicdjava-zulqifli", "files": . }' fileList.json > deploy.json
+                    cat deploy.json 
                 '''
                 
                 sh """
