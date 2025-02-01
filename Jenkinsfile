@@ -4,11 +4,10 @@ node {
     def staticFolder = 'vercel-static'
     def projectName = 'dicoding-cicdjava-zulqifli'
 
-    docker.image('maven:3.9.0').inside("--network host --user root") {
+    docker.image('maven:3.9.0').inside("--network host") {
         // build
         stage('Build') {
             checkout scm
-            sh 'apt update && apt install -y jq'
             sh 'mvn -B -DskipTests clean package'
         }
         
@@ -35,7 +34,9 @@ node {
             sh 'npm install -g vercel'
 
             withCredentials([string(credentialsId: 'vercel_token', variable: 'VERCEL_TOKEN')]) {
-                sh 'vercel --token=$VERCEL_TOKEN --cwd $staticFolder --name $projectName --prod --yes'
+                sh """
+                    vercel --token=$VERCEL_TOKEN --cwd $staticFolder --name $projectName --prod --yes
+                """
             }
 
             sleep 60
