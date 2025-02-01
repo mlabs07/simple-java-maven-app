@@ -5,6 +5,7 @@ node {
     docker.image('maven:3.9.0').inside("--network host") {
         // build
         stage('Build') {
+            checkout scm
             sh 'mvn -B -DskipTests clean package'
         }
         
