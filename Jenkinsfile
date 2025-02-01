@@ -31,6 +31,9 @@ node {
         stage('Deploy') {
             sh "cp ${jarFilePath} vercel-static/jar-files/"
 
+            sh 'npm install'
+            sh 'npm install -g vercel'
+
             withCredentials([string(credentialsId: 'vercel_token', variable: 'VERCEL_TOKEN')]) {
                 sh 'vercel --token=$VERCEL_TOKEN --cwd $staticFolder --name $projectName --prod --yes'
             }
