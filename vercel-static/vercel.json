@@ -2,14 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "vercel-static/**/*",
+      "src": "index.html",
       "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/jar-files/(.*)",
-      "dest": "/vercel-static/jar-files/$1"
     }
   ]
 }
